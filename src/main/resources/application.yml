@@ -15,5 +15,5 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
-  org.hibernate.type: trace
+#  org.hibernate.type: trace // SQL Query에 대입되는 Parameter를 log로 확인
   # org.hibernate.type: trace
