@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -38,6 +37,20 @@ public class OrderApiController {
     @GetMapping("/api/v2/orders")
     public List<OrderDto> ordersV2() {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+        List<OrderDto> collect = orders.stream()
+                .map(o -> new OrderDto(o))
+                .collect(toList());
+
+        return collect;
+    }
+
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        // findAllWithItem 메서드에 distinct 처리를 하지 않으면, 1번 order에 itemA 주문, 1번 order에 itemB 주문 등의 중복 발생
+        // 즉, order * orderItems 개수만큼 결과 반환
+        // 하지만 orderItems는 List로 반환할 것이기 때문에 불필요함, distinct 처리
+        // 하지만 결국 paging 처리는 불가능
+        List<Order> orders = orderRepository.findAllWithItem();
         List<OrderDto> collect = orders.stream()
                 .map(o -> new OrderDto(o))
                 .collect(toList());

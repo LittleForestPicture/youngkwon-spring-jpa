@@ -70,4 +70,13 @@ public class OrderRepository {
         ).getResultList();
     }
 
+    public List<Order> findAllWithItem() {
+        // JPA에서 distinct는 entity의 pk 값이 같으면 같은 값으로 처리한다
+        return em.createQuery(
+                "select o from Order o" +
+                " join fetch o.member m" +
+                " join fetch o.delivery d" +
+                " join fetch o.orderItems oi" +
+                " join fetch oi.item i", Order.class).getResultList();
+    }
 }
